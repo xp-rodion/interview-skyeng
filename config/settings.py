@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'files.apps.FilesConfig',
     'core.apps.CoreConfig',
-    'logs.apps.LogsConfig',
+    'reports.apps.LogsConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +81,9 @@ DATABASES = {
     'default': env.db(),
 }
 
+# User
+
+AUTH_USER_MODEL = 'users.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

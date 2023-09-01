@@ -4,4 +4,4 @@ from users.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    fields = ("email", "last_login")
+    fields = ('username', 'email', 'last_login')
