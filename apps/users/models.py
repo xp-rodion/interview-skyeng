@@ -1,9 +1,8 @@
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
 from core.models import UUIDPrimaryModel
-from core.mixins import PermissionsMixin
 from core.managers import UserManager
 
 
@@ -13,6 +12,11 @@ class User(UUIDPrimaryModel, AbstractBaseUser, PermissionsMixin):
     """
     email = models.EmailField('Email', unique=True)
     last_login = models.DateTimeField(default=timezone.now)
+    is_staff = models.BooleanField(
+        'staff status',
+        default=True,
+        help_text='Designates whether the user can log into this admin site.',
+    )
 
     USERNAME_FIELD = 'email'
 
