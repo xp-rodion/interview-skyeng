@@ -17,8 +17,8 @@ class TimeStampedModel(models.Model):
     """
     Модель с датой и временем создания и изменения
     """
-    created = models.DateTimeField('Когда создан', auto_now_add=True, null=True)
-    modified = models.DateTimeField('Когда изменён', auto_now=True, null=True)
+    created_at = models.DateTimeField('Когда создан', auto_now_add=True)
+    modified_at = models.DateTimeField('Когда изменён', auto_now=True)
 
     class Meta:
         abstract = True
