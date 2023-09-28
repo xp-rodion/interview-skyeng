@@ -1,0 +1,63 @@
+version: "3"
+x-services:
+  app_back: &app_back
+    image: python:3.10-slim-buster
+    restart: unless-stopped
+    working_dir: "/interview-skyeng"
+    volumes:
+      - .:/interview-skyeng
+    env_file: .env
+    command: bash -c "apt-get update
+      && pip install poetry
+      && export PATH=/root/.local/bin:$PATH
+      && poetry install
+      && poetry run python manage.py migrate
+      && bash -c \"$$RUN_COMMAND\""
+    depends_on:
+      - db
+
+services:
+
+  redis:
+    image: redis
+    ports:
+      - "6378:6379"
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    env_file:
+      - .env
+    ports:
+      - ${HOST_PORT}:${DB_PORT}
+    depends_on:
+      - redis
+
+  web:
+    expose:
+      - "8000"
+    ports:
+      - "0.0.0.0:8000:8000"
+    <<: *app_back
+    environment:
+      RUN_COMMAND: "poetry run python manage.py delete_users && poetry run python manage.py createsuperuser --noinput --email=$$DJANGO_SUPERUSER_EMAIL && poetry run python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+
+  celery-beat:
+    <<: *app_back
+    environment:
+      RUN_COMMAND: "poetry shell && celery -A config beat"
+    depends_on:
+      - web
+
+  celery:
+    <<: *app_back
+    environment:
+      RUN_COMMAND: "poetry shell && celery -A config worker -Q report, email"
+    depends_on:
+      - celery-beat

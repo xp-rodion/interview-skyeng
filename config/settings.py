@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'files.apps.FilesConfig',
     'core.apps.CoreConfig',
     'reports.apps.LogsConfig',
+
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +131,13 @@ MEDIA_ROOT = BASE_DIR / 'docs'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = env('EMAIL_USE_SSL')
+
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
